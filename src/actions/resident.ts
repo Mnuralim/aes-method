@@ -35,9 +35,11 @@ export async function getAllResidents(
       birthPlace: decryptAES(resident.birthPlace),
       gender: decryptAES(resident.gender),
       name: decryptAES(resident.name),
-      maritalStatus: decryptAES(resident.maritalStatus || ""),
+      maritalStatus: resident.maritalStatus
+        ? decryptAES(resident.maritalStatus)
+        : null,
       nik: decryptAES(resident.nik),
-      occupation: decryptAES(resident.occupation || ""),
+      occupation: resident.occupation ? decryptAES(resident.occupation) : null,
       phone: decryptAES(resident.phone),
       religion: decryptAES(resident.religion),
     }));
