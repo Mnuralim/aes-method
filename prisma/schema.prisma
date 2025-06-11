@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id           String             @id @unique @default(uuid())
+  username     String             @unique
+  password     String
+  name         String
+  createdAt    DateTime           @default(now()) @map("created_at")
+  residenst    Resident[]
+  activityLogs AdminActivityLog[]
+
+  @@map("admins")
+}
+
+model AdminActivityLog {
+  id          String   @id @unique @default(uuid())
+  adminId     String   @map("admin_id")
+  action      String
+  entity      String?
+  entityId    String?  @map("entity_id")
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  admin       admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@map("admin_activity_logs")
+}
+
+model Resident {
+  id            String      @id @unique @default(uuid())
+  nik           String      @unique
+  name          String
+  phone         String
+  address       String
+  birthDate     String      @map("birth_date")
+  birthPlace    String      @map("birth_place")
+  religion      String
+  gender        String
+  occupation    String?
+  maritalStatus String?     @map("marital_status")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  familyCardId  String?     @map("family_card_id")
+  familyCard    FamilyCard? @relation(fields: [familyCardId], references: [id])
+  admin         admin?      @relation(fields: [adminId], references: [id])
+  adminId       String?     @map("admin_id")
+
+  @@map("residents")
+}
+
+model FamilyCard {
+  id           String     @id @unique @default(uuid())
+  cardNumber   String     @unique @map("card_number")
+  headOfFamily String     @map("head_of_family")
+  address      String
+  memberCount  Int        @default(1) @map("member_count")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  residents    Resident[]
+
+  @@map("family_cards")
+}
