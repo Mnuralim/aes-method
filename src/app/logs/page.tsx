@@ -12,7 +12,7 @@ export default async function Logs({ searchParams }: Props) {
   const logsResult = await getActivities(skip || "0", limit || "10");
   return (
     <main className="w-full px-4 sm:px-6 lg:px-8 py-8 min-h-screen bg-slate-50">
-      <div className="bg-white border border-slate-200 shadow-sm rounded-lg overflow-hidden">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-lg">
         <div className="px-6 py-6 border-b border-slate-100 bg-slate-50">
           <div className="flex items-center gap-3">
             <div>

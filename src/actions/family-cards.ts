@@ -1,71 +1,75 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { createActivity } from "./activity";
 import { decryptAES, encryptAES } from "@/lib/aes";
 
-export async function getAllFamilyCards(
-  isDecrypted: boolean,
-  limit: string,
-  skip: string,
-  search?: string,
-  sortOrder?: string
-) {
-  let familyCards = await prisma.familyCard.findMany({
-    take: parseInt(limit),
-    skip: parseInt(skip),
-    include: {
-      residents: true,
-    },
-    orderBy: {
-      createdAt: sortOrder === "asc" ? "asc" : "desc",
-    },
-  });
+export const getAllFamilyCards = unstable_cache(
+  async function getAllFamilyCards(
+    isDecrypted: boolean,
+    limit: string,
+    skip: string,
+    search?: string,
+    sortOrder?: string
+  ) {
+    let familyCards = await prisma.familyCard.findMany({
+      take: parseInt(limit),
+      skip: parseInt(skip),
+      include: {
+        residents: true,
+      },
+      orderBy: {
+        createdAt: sortOrder === "asc" ? "asc" : "desc",
+      },
+    });
 
-  if (isDecrypted) {
-    familyCards = familyCards.map((familyCard) => ({
-      ...familyCard,
-      cardNumber: decryptAES(familyCard.cardNumber),
-      headOfFamily: decryptAES(familyCard.headOfFamily),
-      address: decryptAES(familyCard.address),
-      residents: familyCard.residents.map((resident) => ({
-        ...resident,
-        nik: decryptAES(resident.nik),
-        name: decryptAES(resident.name),
-        phone: decryptAES(resident.phone),
-        address: decryptAES(resident.address),
-        birthPlace: decryptAES(resident.birthPlace),
-        birthDate: decryptAES(resident.birthDate),
-        religion: decryptAES(resident.religion),
-        gender: decryptAES(resident.gender),
-        occupation: resident.occupation
-          ? decryptAES(resident.occupation)
-          : null,
-        maritalStatus: resident.maritalStatus
-          ? decryptAES(resident.maritalStatus)
-          : null,
-      })),
-    }));
+    const totalCount = await prisma.familyCard.count();
+
+    if (isDecrypted) {
+      familyCards = familyCards.map((familyCard) => ({
+        ...familyCard,
+        cardNumber: decryptAES(familyCard.cardNumber),
+        headOfFamily: decryptAES(familyCard.headOfFamily),
+        address: decryptAES(familyCard.address),
+        residents: familyCard.residents.map((resident) => ({
+          ...resident,
+          nik: decryptAES(resident.nik),
+          name: decryptAES(resident.name),
+          phone: decryptAES(resident.phone),
+          address: decryptAES(resident.address),
+          birthPlace: decryptAES(resident.birthPlace),
+          birthDate: decryptAES(resident.birthDate),
+          religion: decryptAES(resident.religion),
+          gender: decryptAES(resident.gender),
+          occupation: resident.occupation
+            ? decryptAES(resident.occupation)
+            : null,
+          maritalStatus: resident.maritalStatus
+            ? decryptAES(resident.maritalStatus)
+            : null,
+        })),
+      }));
+    }
+
+    if (search) {
+      familyCards = familyCards.filter(
+        (card) =>
+          card.cardNumber.toLowerCase().includes(search.toLowerCase()) ||
+          card.headOfFamily.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    return {
+      familyCards,
+      totalCount,
+      currentPage: Math.floor(parseInt(skip) / parseInt(limit)) + 1,
+      totalPages: Math.ceil(totalCount / parseInt(limit)),
+      itemsPerPage: parseInt(limit),
+    };
   }
-
-  if (search) {
-    familyCards = familyCards.filter(
-      (card) =>
-        card.cardNumber.toLowerCase().includes(search.toLowerCase()) ||
-        card.headOfFamily.toLowerCase().includes(search.toLowerCase())
-    );
-  }
-
-  return {
-    familyCards,
-    totalCount: familyCards.length,
-    currentPage: Math.floor(parseInt(skip) / parseInt(limit)) + 1,
-    totalPages: Math.ceil(familyCards.length / parseInt(limit)),
-    itemsPerPage: parseInt(limit),
-  };
-}
+);
 
 async function checkFamilyCardExists(
   cardNumber: string,
@@ -126,7 +130,7 @@ export async function createFamilyCard(
       };
     }
 
-    const createdFamilyCard = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const familyCard = await tx.familyCard.create({
         data: {
           cardNumber: encryptAES(cardNumber),
@@ -142,8 +146,7 @@ export async function createFamilyCard(
     await createActivity(
       "CREATE",
       "family_card",
-      `Membuat Kartu Keluarga untuk ${headOfFamily}`,
-      createdFamilyCard.id
+      `Membuat Kartu Keluarga untuk ${headOfFamily}`
     );
   } catch (error) {
     if (error instanceof Error) {
@@ -158,6 +161,9 @@ export async function createFamilyCard(
   }
 
   revalidatePath("/family-cards");
+  revalidatePath("/");
+  revalidatePath("/logs");
+  revalidatePath("/residents");
   redirect("/family-cards");
 }
 
@@ -231,8 +237,7 @@ export async function updateFamilyCard(
     await createActivity(
       "UPDATE",
       "family_card",
-      `Memperbarui Kartu Keluarga ${headOfFamily}`,
-      id
+      `Memperbarui Kartu Keluarga ${headOfFamily}`
     );
   } catch (error) {
     if (error instanceof Error) {
@@ -245,7 +250,8 @@ export async function updateFamilyCard(
       };
     }
   }
-
+  revalidatePath("/residents");
+  revalidatePath("/logs");
   revalidatePath("/family-cards");
   redirect("/family-cards");
 }
@@ -277,8 +283,7 @@ export async function deleteFamilyCard(id: string) {
     await createActivity(
       "DELETE",
       "family_card",
-      `Menghapus Kartu Keluarga ${decryptedHeadOfFamily}`,
-      id
+      `Menghapus Kartu Keluarga ${decryptedHeadOfFamily}`
     );
   } catch (error) {
     if (error instanceof Error) {
@@ -288,6 +293,9 @@ export async function deleteFamilyCard(id: string) {
     }
   }
   revalidatePath("/family-cards");
+  revalidatePath("/residents");
+  revalidatePath("/logs");
+  revalidatePath("/");
 }
 
 export async function getFamilyCardById(id: string, isDecrypted: boolean) {

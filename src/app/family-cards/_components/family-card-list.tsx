@@ -76,7 +76,7 @@ export const FamilyCardList = ({ familyCards, modal, pagination }: Props) => {
         scroll: false,
       });
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   const columns: TabelColumn<FamilyCardInfo>[] = [

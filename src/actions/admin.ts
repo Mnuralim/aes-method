@@ -60,6 +60,8 @@ export async function login(
     }
   }
 
+  revalidatePath("/");
+  revalidatePath("/logs");
   redirect("/");
 }
 
@@ -134,7 +136,7 @@ export async function updateAdmin(
       createActivity(
         "UPDATE",
         "admin",
-        `Mengubah data admin ${existingAdmin.name}`
+        `Mengubah data admin: ${existingAdmin.name}`
       ),
     ]);
   } catch (error) {
@@ -150,6 +152,7 @@ export async function updateAdmin(
   }
 
   revalidatePath("/settings");
+  revalidatePath("/logs");
   return {
     error: null,
   };

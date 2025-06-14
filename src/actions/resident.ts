@@ -3,11 +3,11 @@
 import { decryptAES, encryptAES } from "@/lib/aes";
 import prisma from "@/lib/prisma";
 import { createActivity } from "./activity";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
 
-export async function getAllResidents(
+export const getAllResidents = unstable_cache(async function getAllResidents(
   isDecrypted: boolean,
   limit: string,
   skip: string,
@@ -26,6 +26,8 @@ export async function getAllResidents(
       createdAt: sortOrder === "asc" ? "asc" : "desc",
     },
   });
+
+  const totalCount = await prisma.resident.count();
 
   if (isDecrypted) {
     residents = residents.map((resident) => ({
@@ -66,12 +68,12 @@ export async function getAllResidents(
 
   return {
     residents,
-    totalCount: residents.length,
+    totalCount,
     currentPage: Math.floor(parseInt(skip) / parseInt(limit)) + 1,
-    totalPages: Math.ceil(residents.length / parseInt(limit)),
+    totalPages: Math.ceil(totalCount / parseInt(limit)),
     itemsPerPage: parseInt(limit),
   };
-}
+});
 
 export async function deleteResident(id: string) {
   try {
@@ -92,7 +94,7 @@ export async function deleteResident(id: string) {
       }),
       createActivity(
         "DELETE",
-        "student",
+        "residents",
         `Menghapus data penduduk ${decryptAES(existingResident.name)}`,
         id
       ),
@@ -105,6 +107,9 @@ export async function deleteResident(id: string) {
     }
   }
   revalidatePath("/residents");
+  revalidatePath("/");
+  revalidatePath("/logs");
+  revalidatePath("/");
 }
 
 export async function createResident(
@@ -178,7 +183,7 @@ export async function createResident(
 
     await createActivity(
       "CREATE",
-      "resident",
+      "residents",
       `Menambahkan penduduk ${decryptAES(createdResident.name)}`,
       createdResident.id
     );
@@ -195,6 +200,8 @@ export async function createResident(
   }
 
   revalidatePath("/residents");
+  revalidatePath("/");
+  revalidatePath("/logs");
   redirect("/residents");
 }
 
@@ -295,7 +302,7 @@ export async function updateResident(
       }),
       createActivity(
         "UPDATE",
-        "resident",
+        "residents",
         `Mengubah data penduduk ${decryptAES(existingResident.name)}`,
         existingResident.id
       ),
@@ -312,7 +319,9 @@ export async function updateResident(
     }
   }
 
-  revalidatePath("/residents");
+  revalidatePath("/residents", "layout");
+  revalidatePath("/");
+  revalidatePath("/logs");
   redirect("/residents");
 }
 
