@@ -70,85 +70,74 @@ export const Tutorial = () => {
       ],
     },
     {
-      id: "students",
-      title: "Manajemen Data Siswa",
+      id: "familyCard",
+      title: "Manajemen Data Kartu Keluarga",
       icon: <Users className="w-5 h-5" />,
       steps: [
         {
-          title: "Akses Menu Siswa",
+          title: "Akses Menu Kartu Keluarga",
           description:
-            'Pilih menu "Manajemen Data Siswa" di sidebar pada sisi kiri untuk mengakses data siswa',
+            'Pilih menu "Manajemen Data Kartu Keluarga" di sidebar pada sisi kiri untuk mengakses data kartu keluarga',
         },
         {
           title: "Mode Enkripsi",
           description:
             "Data ditampilkan dalam bentuk enkripsi untuk keamanan. Klik tombol dekripsi untuk melihat data asli",
-          image: "/image/student-encrypt.png",
+          image: "/image/family-card-encrypt.png",
         },
         {
           title: "Dekripsi Data",
           description:
-            "Setelah mengklik tombol dekripsi, data siswa akan ditampilkan dalam format yang dapat dibaca",
-          image: "/image/decrypt-student.png",
+            "Setelah mengklik tombol dekripsi, data kartu keluarga akan ditampilkan dalam format yang dapat dibaca",
+          image: "/image/family-card-decrypt.png",
         },
         {
-          title: "Tambah Data Siswa",
+          title: "Tambah Data Kartu Keluarga",
           description:
-            'Klik tombol "Tambah Siswa" untuk menambahkan data siswa baru dengan mengisi form yang tersedia',
-          image: "/image/add-student.png",
+            'Klik tombol "Tambah Kartu Keluarga" untuk menambahkan data kartu keluarga baru dengan mengisi form yang tersedia',
+          image: "/image/add-family-card.png",
         },
         {
-          title: "Update Data Siswa",
+          title: "Update Data Kartu Keluarga",
           description:
             "Aktifkan mode dekripsi terlebih dahulu, kemudian form untuk memperbarui data siswa akan muncul",
-          image: "/image/update-student.png",
-        },
-        {
-          title: "Export ke Excel",
-          description:
-            'Gunakan tombol "Export to Excel" untuk mengunduh data siswa. Tombol ini aktif saat mode dekripsi',
-        },
-        {
-          title: "Detail Data Siswa",
-          description:
-            'Klik tombol "Detail" untuk melihat informasi lengkap dari data siswa yang dipilih',
-          image: "/image/detail-student.png",
+          image: "/image/update-family-card.png",
         },
       ],
     },
     {
-      id: "scores",
-      title: "Manajemen Nilai Siswa",
+      id: "resident",
+      title: "Manajemen Data Penduduk",
       icon: <Award className="w-5 h-5" />,
       steps: [
         {
-          title: "Akses Menu Nilai",
+          title: "Akses Menu Penduduk",
           description:
-            'Pilih menu "Manajemen Nilai Siswa" di sidebar pada sisi kiri untuk mengakses data nilai',
+            'Pilih menu "Manajemen Data Penduduk" di sidebar pada sisi kiri untuk mengakses data penduduk',
         },
         {
-          title: "Mode Enkripsi Nilai",
+          title: "Mode Enkripsi Data Penduduk",
           description:
             "Data nilai ditampilkan dalam bentuk enkripsi. Klik tombol dekripsi untuk melihat data asli",
-          image: "/image/encrypt-score.png",
+          image: "/image/resident-encrypt.png",
         },
         {
-          title: "Dekripsi Data Nilai",
+          title: "Dekripsi Data Penduduk",
           description:
-            "Setelah dekripsi, data nilai siswa akan ditampilkan dalam format yang dapat dibaca",
-          image: "/image/decrypt-score.png",
+            "Setelah dekripsi, data penduduk akan ditampilkan dalam format yang dapat dibaca",
+          image: "/image/resident-decrypt.png",
         },
         {
-          title: "Tambah Data Nilai",
+          title: "Tambah Data Penduduk",
           description:
-            'Klik tombol "Tambah Nilai" untuk menambahkan data nilai baru dengan mengisi form yang benar',
-          image: "/image/add-score.png",
+            'Klik tombol "Tambah Penduduk" untuk menambahkan data penduduk baru dengan mengisi form yang benar',
+          image: "/image/add-resident.png",
         },
         {
-          title: "Update Data Nilai",
+          title: "Update Data Penduduk",
           description:
-            "Aktifkan mode dekripsi, kemudian form untuk memperbarui data nilai akan tersedia",
-          image: "/image/update-score.png",
+            "Aktifkan mode dekripsi, kemudian form untuk memperbarui data penduduk akan tersedia",
+          image: "/image/update-resident.png",
         },
         {
           title: "Export Nilai ke Excel",
@@ -200,15 +189,15 @@ export const Tutorial = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-              <span className="text-white text-sm font-medium">SD</span>
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-sm font-medium">DO</span>
             </div>
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">
                 Panduan Aplikasi
               </h1>
               <p className="text-gray-600 text-sm">
-                SDN 12 MAWASANGKA - Sistem Manajemen Data
+                DESA OENGKOLAKI - Sistem Manajemen Data
               </p>
             </div>
           </div>
@@ -261,7 +250,7 @@ export const Tutorial = () => {
                     >
                       <div className="flex gap-6">
                         <div className="flex-shrink-0">
-                          <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                             {stepIndex + 1}
                           </div>
                         </div>

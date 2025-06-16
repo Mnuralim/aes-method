@@ -7,7 +7,7 @@ interface Props {
 export const ErrorMessage = ({ message }: Props) => {
   if (!message) return null;
   return (
-    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg

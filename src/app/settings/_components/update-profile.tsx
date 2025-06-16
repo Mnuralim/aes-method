@@ -33,7 +33,7 @@ export const AdminProfileUpdate = ({ admin }: Props) => {
     <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-slate-900 flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm">
             <User className="w-6 h-6 text-white" />
           </div>
           <div>
