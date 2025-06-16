@@ -253,6 +253,7 @@ export async function updateFamilyCard(
   revalidatePath("/residents");
   revalidatePath("/logs");
   revalidatePath("/family-cards");
+  revalidatePath("/");
   redirect("/family-cards");
 }
 
