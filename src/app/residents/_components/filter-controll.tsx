@@ -5,9 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   currentSortOrder?: string;
+  currentSearch?: string;
 }
 
-export const FilterControl1 = ({ currentSortOrder }: Props) => {
+export const FilterControl1 = ({ currentSortOrder, currentSearch }: Props) => {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
 
@@ -71,7 +72,8 @@ export const FilterControl1 = ({ currentSortOrder }: Props) => {
             <input
               type="text"
               onChange={handleSearch}
-              placeholder="Cari penduduk..."
+              defaultValue={currentSearch}
+              placeholder="Cari Penduduk..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             />
           </div>

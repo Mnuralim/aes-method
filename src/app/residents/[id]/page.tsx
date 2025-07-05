@@ -1,6 +1,5 @@
 import { getResidentById } from "@/actions/resident";
 import { ResidentDetail } from "./_components/detail-resident";
-import { getAllFamilyCards } from "@/actions/family-cards";
 
 interface Props {
   params: Promise<{
@@ -16,10 +15,10 @@ export default async function DetailResidentPage({
   searchParams,
 }: Props) {
   const { id } = await params;
-  const { isDecrypted, modal } = await searchParams;
-  const [resident, familyCardsResult] = await Promise.all([
-    await getResidentById(id, isDecrypted === "true" ? true : false),
-    getAllFamilyCards(isDecrypted === "true" ? true : false, "100000", "0"),
+  const { isDecrypted, modal, message, error, success, key } =
+    await searchParams;
+  const [resident] = await Promise.all([
+    await getResidentById(id, isDecrypted === "true" ? true : false, key),
   ]);
 
   if (!resident) {
@@ -35,10 +34,11 @@ export default async function DetailResidentPage({
   return (
     <div className="min-h-screen bg-gray-50 px-3">
       <ResidentDetail
-        familyCards={familyCardsResult.familyCards}
         resident={resident}
         isDecrypted={isDecrypted === "true"}
         modal={modal as "edit"}
+        message={message}
+        toastType={success ? "success" : error ? "error" : undefined}
       />
     </div>
   );

@@ -4,26 +4,16 @@ import { useActionState } from "react";
 import { SubmitButton } from "./submit-button";
 import { User, Calendar, MapPin, Phone, Heart } from "lucide-react";
 import { ErrorMessage } from "@/app/_components/error-message";
-import type { FamilyCard, Prisma } from "@prisma/client";
+import type { Resident } from "@prisma/client";
 import { createResident, updateResident } from "@/actions/resident";
 
 interface Props {
   modal?: "add" | "edit";
-  selectedResident?: Prisma.ResidentGetPayload<{
-    include: {
-      familyCard: true;
-    };
-  }> | null;
-  familyCards: FamilyCard[];
+  selectedResident?: Resident | null;
   onClose: () => void;
 }
 
-export const ResidentForm = ({
-  modal,
-  selectedResident,
-  familyCards,
-  onClose,
-}: Props) => {
+export const ResidentForm = ({ modal, selectedResident, onClose }: Props) => {
   const [createState, createAction] = useActionState(createResident, {
     error: null,
   });
@@ -80,24 +70,6 @@ export const ResidentForm = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-150 font-mono"
                 required
               />
-            </div>
-
-            <div>
-              <label htmlFor="familyCardId">Kartu Keluarga</label>
-              <select
-                id="familyCardId"
-                name="familyCardId"
-                defaultValue={selectedResident?.familyCardId || ""}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-150"
-                required
-              >
-                <option value="">Pilih Nomor Kartu Keluarga</option>
-                {familyCards.map((fc) => (
-                  <option key={fc.id} value={fc.id}>
-                    {fc.cardNumber}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div>

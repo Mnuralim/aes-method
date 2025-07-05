@@ -3,14 +3,12 @@
 import React from "react";
 import {
   Users,
-  Home,
   Shield,
   Activity,
   Clock,
   FileText,
   ActivityIcon,
   UserPlus,
-  FolderPlus,
 } from "lucide-react";
 import type { AdminActivityLog } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
@@ -18,7 +16,6 @@ import Link from "next/link";
 
 interface Props {
   totalResidents: number;
-  totalFamilyCards: number;
   totalAdmin: number;
   recentActivities: (AdminActivityLog & {
     admin: {
@@ -34,7 +31,6 @@ export const Dashboard = ({
   totalActivities,
   totalAdmin,
   totalResidents,
-  totalFamilyCards,
 }: Props) => {
   return (
     <div>
@@ -48,7 +44,7 @@ export const Dashboard = ({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -61,22 +57,6 @@ export const Dashboard = ({
             </div>
             <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600">
-                Kartu Keluarga
-              </p>
-              <p className="text-2xl font-semibold text-slate-800">
-                {totalFamilyCards}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
-              <Home className="w-6 h-6 text-emerald-600" />
             </div>
           </div>
         </div>
@@ -171,19 +151,13 @@ export const Dashboard = ({
           <h3 className="text-lg font-semibold text-slate-800 mb-4">
             Aksi Cepat
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all duration-200 text-left group">
               <Link href={"/residents?modal=add"} className="w-full h-full">
                 <UserPlus className="w-6 h-6 text-slate-600 group-hover:text-blue-600 mb-2 transition-colors" />
                 <p className="text-sm font-medium text-slate-800">
                   Tambah Penduduk
                 </p>
-              </Link>
-            </div>
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all duration-200 text-left group">
-              <Link href={"/family-cards?modal=add"} className="w-full h-full">
-                <FolderPlus className="w-6 h-6 text-slate-600 group-hover:text-emerald-600 mb-2 transition-colors" />
-                <p className="text-sm font-medium text-slate-800">Tambah KK</p>
               </Link>
             </div>
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all duration-200 text-left group">

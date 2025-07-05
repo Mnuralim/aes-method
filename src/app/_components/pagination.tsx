@@ -188,8 +188,8 @@ export function Pagination({
             onClick={() => handlePageChange(1)}
             className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors duration-200 ${
               currentPage === 1
-                ? "bg-gray-900 text-white border-gray-900"
-                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2"
             }`}
           >
             1
@@ -211,8 +211,8 @@ export function Pagination({
                 onClick={() => handlePageChange(page as number)}
                 className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors duration-200 ${
                   currentPage === page
-                    ? "bg-gray-900 text-white border-gray-900"
-                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2"
                 }`}
               >
                 {page}
@@ -230,8 +230,8 @@ export function Pagination({
               onClick={() => handlePageChange(totalPages)}
               className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors duration-200 ${
                 currentPage === totalPages
-                  ? "bg-gray-900 text-white border-gray-900"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2"
               }`}
             >
               {totalPages}

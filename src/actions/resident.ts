@@ -1,11 +1,13 @@
 "use server";
 
+const { default: CryptoJS } = await import("crypto-js");
 import { decryptAES, encryptAES } from "@/lib/aes";
 import prisma from "@/lib/prisma";
 import { createActivity } from "./activity";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
+const currentKey = process.env.AES_KEY;
 
 export const getAllResidents = unstable_cache(async function getAllResidents(
   isDecrypted: boolean,
@@ -14,65 +16,89 @@ export const getAllResidents = unstable_cache(async function getAllResidents(
   religion?: string,
   maritalStatus?: string,
   search?: string,
-  sortOrder?: string
+  sortOrder?: string,
+  key?: string
 ) {
-  let residents = await prisma.resident.findMany({
-    take: parseInt(limit),
-    skip: parseInt(skip),
-    include: {
-      familyCard: true,
-    },
-    orderBy: {
-      createdAt: sortOrder === "asc" ? "asc" : "desc",
-    },
-  });
+  try {
+    let residents = await prisma.resident.findMany({
+      take: parseInt(limit),
+      skip: parseInt(skip),
+      orderBy: {
+        createdAt: sortOrder === "asc" ? "asc" : "desc",
+      },
+    });
 
-  const totalCount = await prisma.resident.count();
+    const totalCount = await prisma.resident.count();
 
-  if (isDecrypted) {
-    residents = residents.map((resident) => ({
-      ...resident,
-      address: decryptAES(resident.address),
-      birthDate: decryptAES(resident.birthDate),
-      birthPlace: decryptAES(resident.birthPlace),
-      gender: decryptAES(resident.gender),
-      name: decryptAES(resident.name),
-      maritalStatus: resident.maritalStatus
-        ? decryptAES(resident.maritalStatus)
-        : null,
-      nik: decryptAES(resident.nik),
-      occupation: resident.occupation ? decryptAES(resident.occupation) : null,
-      phone: decryptAES(resident.phone),
-      religion: decryptAES(resident.religion),
-    }));
+    if (isDecrypted || key) {
+      if (!key) {
+        throw new Error("Kunci AES tidak ditemukan");
+      }
+
+      if (currentKey !== key) {
+        throw new Error("Kunci AES tidak sesuai");
+      }
+
+      const AES_KEY = CryptoJS.enc.Utf8.parse(key);
+
+      residents = residents.map((resident) => ({
+        ...resident,
+        address: decryptAES(resident.address, AES_KEY),
+        birthDate: decryptAES(resident.birthDate, AES_KEY),
+        birthPlace: decryptAES(resident.birthPlace, AES_KEY),
+        gender: decryptAES(resident.gender, AES_KEY),
+        name: decryptAES(resident.name, AES_KEY),
+        maritalStatus: resident.maritalStatus
+          ? decryptAES(resident.maritalStatus, AES_KEY)
+          : null,
+        nik: decryptAES(resident.nik, AES_KEY),
+        occupation: resident.occupation
+          ? decryptAES(resident.occupation, AES_KEY)
+          : null,
+        phone: decryptAES(resident.phone, AES_KEY),
+        religion: decryptAES(resident.religion, AES_KEY),
+      }));
+    }
+
+    if (search) {
+      residents = residents.filter((resident) =>
+        resident.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (religion) {
+      residents = residents.filter(
+        (resident) => resident.religion.toLowerCase() === religion.toLowerCase()
+      );
+    }
+
+    if (maritalStatus) {
+      residents = residents.filter(
+        (resident) =>
+          resident.maritalStatus?.toLowerCase() === maritalStatus.toLowerCase()
+      );
+    }
+
+    return {
+      residents,
+      totalCount,
+      currentPage: Math.floor(parseInt(skip) / parseInt(limit)) + 1,
+      totalPages: Math.ceil(totalCount / parseInt(limit)),
+      itemsPerPage: parseInt(limit),
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      redirect(
+        `/residents?error=1&message=${encodeURIComponent(error.message)}`
+      );
+    } else {
+      redirect(
+        `/residents?error=1&message=${encodeURIComponent(
+          "Something went wrong"
+        )}`
+      );
+    }
   }
-
-  if (search) {
-    residents = residents.filter((resident) =>
-      resident.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }
-
-  if (religion) {
-    residents = residents.filter(
-      (resident) => resident.religion.toLowerCase() === religion.toLowerCase()
-    );
-  }
-
-  if (maritalStatus) {
-    residents = residents.filter(
-      (resident) =>
-        resident.maritalStatus?.toLowerCase() === maritalStatus.toLowerCase()
-    );
-  }
-
-  return {
-    residents,
-    totalCount,
-    currentPage: Math.floor(parseInt(skip) / parseInt(limit)) + 1,
-    totalPages: Math.ceil(totalCount / parseInt(limit)),
-    itemsPerPage: parseInt(limit),
-  };
 });
 
 export async function deleteResident(id: string) {
@@ -86,6 +112,8 @@ export async function deleteResident(id: string) {
     if (!existingResident) {
       throw new Error("Data siswa tidak ditemukan");
     }
+    const AES_KEY = CryptoJS.enc.Utf8.parse(currentKey!);
+
     await Promise.all([
       prisma.resident.delete({
         where: {
@@ -95,7 +123,7 @@ export async function deleteResident(id: string) {
       createActivity(
         "DELETE",
         "residents",
-        `Menghapus data penduduk ${decryptAES(existingResident.name)}`,
+        `Menghapus data penduduk ${decryptAES(existingResident.name, AES_KEY)}`,
         id
       ),
     ]);
@@ -153,9 +181,11 @@ export async function createResident(
   }
 
   try {
+    const AES_KEY = CryptoJS.enc.Utf8.parse(currentKey!);
+
     const allResidents = await prisma.resident.findMany();
     const nikExists = allResidents.some((resident) => {
-      return decryptAES(resident.nik) === nik;
+      return decryptAES(resident.nik, AES_KEY) === nik;
     });
 
     if (nikExists) {
@@ -176,7 +206,6 @@ export async function createResident(
         gender: encryptAES(gender),
         occupation: occupation ? encryptAES(occupation) : null,
         maritalStatus: maritalStatus ? encryptAES(maritalStatus) : null,
-        familyCardId: familyCardId,
         adminId: session!.id,
       },
     });
@@ -184,7 +213,7 @@ export async function createResident(
     await createActivity(
       "CREATE",
       "residents",
-      `Menambahkan penduduk ${decryptAES(createdResident.name)}`,
+      `Menambahkan penduduk ${decryptAES(createdResident.name, AES_KEY)}`,
       createdResident.id
     );
   } catch (error) {
@@ -269,9 +298,9 @@ export async function updateResident(
         nik: true,
       },
     });
-
+    const AES_KEY = CryptoJS.enc.Utf8.parse(currentKey!);
     const isDuplicateNik = allResidents.some((resident) => {
-      const decryptedNik = decryptAES(resident.nik);
+      const decryptedNik = decryptAES(resident.nik, AES_KEY);
       return decryptedNik === nik;
     });
 
@@ -297,13 +326,12 @@ export async function updateResident(
           gender: encryptAES(gender),
           occupation: occupation ? encryptAES(occupation) : null,
           maritalStatus: maritalStatus ? encryptAES(maritalStatus) : null,
-          familyCardId,
         },
       }),
       createActivity(
         "UPDATE",
         "residents",
-        `Mengubah data penduduk ${decryptAES(existingResident.name)}`,
+        `Mengubah data penduduk ${decryptAES(existingResident.name, AES_KEY)}`,
         existingResident.id
       ),
     ]);
@@ -325,43 +353,64 @@ export async function updateResident(
   redirect("/residents");
 }
 
-export async function getResidentById(id: string, isDecrypted: boolean) {
-  const resident = await prisma.resident.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      familyCard: true,
-    },
-  });
+export async function getResidentById(
+  id: string,
+  isDecrypted: boolean,
+  key?: string
+) {
+  try {
+    const resident = await prisma.resident.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-  if (!resident) {
-    return null;
+    if (!resident) {
+      return null;
+    }
+
+    if (isDecrypted || key) {
+      if (!key) {
+        throw new Error("Kunci AES tidak ditemukan");
+      }
+
+      if (currentKey !== key) {
+        throw new Error("Kunci AES tidak sesuai");
+      }
+
+      const AES_KEY = CryptoJS.enc.Utf8.parse(key);
+
+      return {
+        ...resident,
+        nik: decryptAES(resident.nik, AES_KEY),
+        name: decryptAES(resident.name, AES_KEY),
+        birthPlace: decryptAES(resident.birthPlace, AES_KEY),
+        birthDate: decryptAES(resident.birthDate, AES_KEY),
+        address: decryptAES(resident.address, AES_KEY),
+        phone: decryptAES(resident.phone, AES_KEY),
+        religion: decryptAES(resident.religion, AES_KEY),
+        gender: decryptAES(resident.gender, AES_KEY),
+        maritalStatus: resident.maritalStatus
+          ? decryptAES(resident.maritalStatus, AES_KEY)
+          : null,
+        occupation: resident.occupation
+          ? decryptAES(resident.occupation, AES_KEY)
+          : null,
+      };
+    }
+
+    return resident;
+  } catch (error) {
+    if (error instanceof Error) {
+      redirect(
+        `/residents/${id}?error=1&message=${encodeURIComponent(error.message)}`
+      );
+    } else {
+      redirect(
+        `/residents/${id}?error=1&message=${encodeURIComponent(
+          "Something went wrong"
+        )}`
+      );
+    }
   }
-
-  if (isDecrypted) {
-    return {
-      ...resident,
-      nik: decryptAES(resident.nik),
-      name: decryptAES(resident.name),
-      birthPlace: decryptAES(resident.birthPlace),
-      birthDate: decryptAES(resident.birthDate),
-      address: decryptAES(resident.address),
-      phone: decryptAES(resident.phone),
-      religion: decryptAES(resident.religion),
-      gender: decryptAES(resident.gender),
-      maritalStatus: resident.maritalStatus
-        ? decryptAES(resident.maritalStatus)
-        : null,
-      occupation: resident.occupation ? decryptAES(resident.occupation) : null,
-      familyCard: resident.familyCard
-        ? {
-            ...resident.familyCard,
-            cardNumber: decryptAES(resident.familyCard.cardNumber),
-          }
-        : null,
-    };
-  }
-
-  return resident;
 }

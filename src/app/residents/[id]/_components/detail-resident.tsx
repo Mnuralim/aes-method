@@ -2,7 +2,7 @@
 
 import { Modal } from "@/app/_components/modal";
 import { calculateAge, formatDate } from "@/lib/utils";
-import type { FamilyCard, Prisma } from "@prisma/client";
+import type { Resident } from "@prisma/client";
 import {
   ArrowLeft,
   Edit,
@@ -23,25 +23,26 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ResidentForm } from "../../_components/form";
+import { Toast } from "@/app/_components/toast";
 
 interface Props {
-  resident: Prisma.ResidentGetPayload<{
-    include: {
-      familyCard: true;
-    };
-  }>;
+  resident: Resident;
   isDecrypted: boolean;
   modal?: "edit";
-  familyCards: FamilyCard[];
+  toastType?: "success" | "error";
+  message?: string;
 }
 
 export const ResidentDetail = ({
   resident,
   isDecrypted,
   modal,
-  familyCards,
+  message,
+  toastType,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [key, setKey] = useState<string>("");
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const isModalOpen = modal === "edit";
@@ -52,8 +53,10 @@ export const ResidentDetail = ({
       const newParams = new URLSearchParams(searchParams);
       if (isDecrypted) {
         newParams.delete("isDecrypted");
+        newParams.delete("key");
       } else {
         newParams.set("isDecrypted", "true");
+        newParams.set("key", key);
       }
       router.replace(`/residents/${resident.id}?${newParams.toString()}`, {
         scroll: false,
@@ -68,6 +71,10 @@ export const ResidentDetail = ({
     router.push(`/residents/${resident.id}?${newParams.toString()}`, {
       scroll: false,
     });
+  };
+
+  const handleCloseToast = () => {
+    router.replace(`/residents/${resident.id}`, { scroll: false });
   };
 
   const handleClose = () => {
@@ -96,6 +103,18 @@ export const ResidentDetail = ({
               </div>
             </div>
             <div className="flex gap-3 items-center">
+              {!isDecrypted ? (
+                <div>
+                  <input
+                    type="password"
+                    name="key"
+                    onChange={(e) => setKey(e.target.value)}
+                    value={key}
+                    placeholder="Masukkan Kunci Dekripsi"
+                    className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 text-sm"
+                  />
+                </div>
+              ) : null}
               <button
                 onClick={handleEncryptDecrypt}
                 disabled={isLoading}
@@ -284,18 +303,6 @@ export const ResidentDetail = ({
 
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <CreditCard className="w-5 h-5 text-gray-500 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Nomor Kartu Keluarga
-                        </p>
-                        <p className="text-sm text-gray-900">
-                          {resident.familyCard?.cardNumber || "Tidak ada"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
                       <Heart className="w-5 h-5 text-gray-500 mt-0.5" />
                       <div>
                         <p className="text-sm font-medium text-gray-700">
@@ -351,12 +358,16 @@ export const ResidentDetail = ({
       </div>
 
       <Modal onClose={handleClose} isOpen={isModalOpen}>
-        <ResidentForm
-          familyCards={familyCards}
-          selectedResident={resident}
-          onClose={handleClose}
-        />
+        <ResidentForm selectedResident={resident} onClose={handleClose} />
       </Modal>
+
+      <Toast
+        isVisible={message !== undefined}
+        message={(message as string) || ""}
+        onClose={handleCloseToast}
+        type={(toastType as "success" | "error") || "success"}
+        autoClose
+      />
     </div>
   );
 };

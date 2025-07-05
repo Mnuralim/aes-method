@@ -10,7 +10,6 @@ export default async function Home() {
         recentActivities={stats.recentAcitvity}
         totalActivities={stats.activitiesCount}
         totalAdmin={stats.adminCount}
-        totalFamilyCards={stats.familyCardsCount}
         totalResidents={stats.residentsCount}
       />
     </div>

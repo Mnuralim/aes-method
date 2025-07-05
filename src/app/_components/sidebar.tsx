@@ -12,7 +12,6 @@ import {
   NotebookIcon,
   User2Icon,
   HistoryIcon,
-  MedalIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { logOut } from "@/actions/admin";
@@ -89,11 +88,7 @@ export function Sidebar({ className = "", username }: SidebarProps) {
 
   const menuItems = [
     { name: "Dashboard", icon: <Home className="w-5 h-5" />, href: "/" },
-    {
-      name: "Manajemen Kartu Keluarga",
-      icon: <MedalIcon className="w-5 h-5" />,
-      href: "/family-cards",
-    },
+
     {
       name: "Manajemen Data Penduduk",
       icon: <User2Icon className="w-5 h-5" />,
@@ -129,7 +124,7 @@ export function Sidebar({ className = "", username }: SidebarProps) {
     <>
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 p-2.5 rounded-lg bg-slate-800 text-white shadow-sm hover:bg-slate-700 transition-colors duration-200 z-30 lg:hidden"
+        className="fixed top-4 left-4 p-2.5 rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition-colors duration-200 z-30 lg:hidden"
         aria-label="Toggle sidebar"
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

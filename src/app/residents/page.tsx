@@ -1,6 +1,5 @@
 import { getAllResidents } from "@/actions/resident";
 import { ResidentList } from "./_components/resident-list";
-import { getAllFamilyCards } from "@/actions/family-cards";
 
 interface Props {
   searchParams: Promise<{
@@ -18,9 +17,13 @@ export default async function ResidentsPage({ searchParams }: Props) {
     maritalStatus,
     sortOrder,
     isDecrypted,
+    key,
+    message,
+    error,
+    success,
   } = await searchParams;
 
-  const [residentsResult, familyCardResult] = await Promise.all([
+  const [residentsResult] = await Promise.all([
     getAllResidents(
       isDecrypted === "true" ? true : false,
       limit || "10",
@@ -28,9 +31,9 @@ export default async function ResidentsPage({ searchParams }: Props) {
       religion,
       maritalStatus,
       search,
-      sortOrder
+      sortOrder,
+      key
     ),
-    getAllFamilyCards(true, "100000", "0"),
   ]);
 
   return (
@@ -51,7 +54,8 @@ export default async function ResidentsPage({ searchParams }: Props) {
 
         <div className="p-6">
           <ResidentList
-            familyCards={familyCardResult.familyCards}
+            message={message}
+            toastType={success ? "success" : error ? "error" : undefined}
             residents={residentsResult.residents}
             modal={modal as "add" | "edit"}
             pagination={{

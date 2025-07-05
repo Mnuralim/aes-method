@@ -14,8 +14,11 @@ export function encryptAES(text: string): string {
   return encrypted;
 }
 
-export function decryptAES(ciphertext: string): string {
-  const decrypted = CryptoJS.AES.decrypt(ciphertext, AES_KEY, {
+export function decryptAES(
+  ciphertext: string,
+  key: CryptoJS.lib.WordArray
+): string {
+  const decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
     iv: IV,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,

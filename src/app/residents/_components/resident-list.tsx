@@ -19,32 +19,30 @@ import { formatDate } from "@/lib/utils";
 import { Modal } from "@/app/_components/modal";
 import { FilterControl1 } from "./filter-controll";
 import { Pagination } from "@/app/_components/pagination";
-import type { FamilyCard, Prisma } from "@prisma/client";
 import { deleteResident } from "@/actions/resident";
 import { ResidentForm } from "./form";
-
-type ResidentInfo = Prisma.ResidentGetPayload<{
-  include: {
-    familyCard: true;
-  };
-}>;
+import type { Resident } from "@prisma/client";
+import { Toast } from "@/app/_components/toast";
 
 interface Props {
-  residents: ResidentInfo[];
+  residents: Resident[];
   modal?: "add" | "edit";
   pagination: PaginationProps;
-  familyCards: FamilyCard[];
+  toastType?: "success" | "error";
+  message?: string;
 }
 
 export const ResidentList = ({
   residents,
   modal,
   pagination,
-  familyCards,
+  message,
+  toastType,
 }: Props) => {
-  const [selectedResident, setSelectedResident] = useState<ResidentInfo | null>(
+  const [selectedResident, setSelectedResident] = useState<Resident | null>(
     null
   );
+  const [key, setKey] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const router = useRouter();
@@ -60,7 +58,7 @@ export const ResidentList = ({
     });
   };
 
-  const handleEditResident = (resident: ResidentInfo) => {
+  const handleEditResident = (resident: Resident) => {
     const newParams = new URLSearchParams(searchParams);
     setSelectedResident(resident);
     newParams.set("modal", "edit");
@@ -80,14 +78,20 @@ export const ResidentList = ({
       const newParams = new URLSearchParams(searchParams);
       if (isDecrypted) {
         newParams.delete("isDecrypted");
+        newParams.delete("key");
       } else {
         newParams.set("isDecrypted", "true");
+        newParams.set("key", key);
       }
       router.push(`/residents?${newParams.toString()}`, {
         scroll: false,
       });
       setIsLoading(false);
     }, 1000);
+  };
+
+  const handleCloseToast = () => {
+    router.replace("/residents", { scroll: false });
   };
 
   const handleExportToExcel = async () => {
@@ -151,7 +155,7 @@ export const ResidentList = ({
     }
   };
 
-  const columns: TabelColumn<ResidentInfo>[] = [
+  const columns: TabelColumn<Resident>[] = [
     {
       header: "No",
       accessor: "id",
@@ -253,7 +257,19 @@ export const ResidentList = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
+          {!isDecrypted ? (
+            <div>
+              <input
+                type="password"
+                name="key"
+                onChange={(e) => setKey(e.target.value)}
+                value={key}
+                placeholder="Masukkan Kunci Dekripsi"
+                className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 text-sm"
+              />
+            </div>
+          ) : null}
           <button
             onClick={handleEncryptDecrypt}
             disabled={isLoading}
@@ -308,7 +324,7 @@ export const ResidentList = ({
 
         <button
           onClick={handleAddClick}
-          className="inline-flex items-center px-4 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors duration-150 shadow-sm border border-slate-900"
+          className="inline-flex items-center px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-800 transition-colors duration-150 shadow-sm border border-blue-600"
         >
           <Plus className="w-4 h-4 mr-2" />
           Tambah Penduduk
@@ -336,6 +352,7 @@ export const ResidentList = ({
 
       {isDecrypted ? (
         <FilterControl1
+          currentSearch={(pagination.preserveParams?.search as string) || ""}
           currentSortOrder={
             (pagination.preserveParams?.sortOrder as "asc" | "desc") || "desc"
           }
@@ -356,12 +373,19 @@ export const ResidentList = ({
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <ResidentForm
-          familyCards={familyCards}
           modal={modal}
           onClose={handleCloseModal}
           selectedResident={selectedResident}
         />
       </Modal>
+
+      <Toast
+        isVisible={message !== undefined}
+        message={(message as string) || ""}
+        onClose={handleCloseToast}
+        type={(toastType as "success" | "error") || "success"}
+        autoClose
+      />
     </div>
   );
 };

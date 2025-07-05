@@ -10,45 +10,38 @@ export const getStats = unstable_cache(async function getStats() {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [
-    residentsCount,
-    familyCardsCount,
-    adminCount,
-    activitiesCount,
-    recentAcitvity,
-  ] = await Promise.all([
-    prisma.resident.count(),
-    prisma.familyCard.count(),
-    prisma.admin.count(),
+  const [residentsCount, adminCount, activitiesCount, recentAcitvity] =
+    await Promise.all([
+      prisma.resident.count(),
+      prisma.admin.count(),
 
-    prisma.adminActivityLog.count({
-      where: {
-        createdAt: {
-          gte: today,
-          lt: tomorrow,
-        },
-      },
-    }),
-
-    prisma.adminActivityLog.findMany({
-      take: 4,
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        admin: {
-          select: {
-            name: true,
-            username: true,
+      prisma.adminActivityLog.count({
+        where: {
+          createdAt: {
+            gte: today,
+            lt: tomorrow,
           },
         },
-      },
-    }),
-  ]);
+      }),
+
+      prisma.adminActivityLog.findMany({
+        take: 4,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          admin: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+        },
+      }),
+    ]);
 
   return {
     residentsCount,
-    familyCardsCount,
     adminCount,
     activitiesCount,
     recentAcitvity,
