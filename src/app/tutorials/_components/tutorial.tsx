@@ -6,7 +6,6 @@ import {
   ChevronDown,
   LogIn,
   Home,
-  Users,
   Award,
   History,
   User,
@@ -66,42 +65,6 @@ export const Tutorial = () => {
           description:
             "Gunakan menu sidebar di sisi kiri untuk navigasi ke berbagai fitur sistem",
           image: "/image/dashboard.png",
-        },
-      ],
-    },
-    {
-      id: "familyCard",
-      title: "Manajemen Data Kartu Keluarga",
-      icon: <Users className="w-5 h-5" />,
-      steps: [
-        {
-          title: "Akses Menu Kartu Keluarga",
-          description:
-            'Pilih menu "Manajemen Data Kartu Keluarga" di sidebar pada sisi kiri untuk mengakses data kartu keluarga',
-        },
-        {
-          title: "Mode Enkripsi",
-          description:
-            "Data ditampilkan dalam bentuk enkripsi untuk keamanan. Klik tombol dekripsi untuk melihat data asli",
-          image: "/image/family-card-encrypt.png",
-        },
-        {
-          title: "Dekripsi Data",
-          description:
-            "Setelah mengklik tombol dekripsi, data kartu keluarga akan ditampilkan dalam format yang dapat dibaca",
-          image: "/image/family-card-decrypt.png",
-        },
-        {
-          title: "Tambah Data Kartu Keluarga",
-          description:
-            'Klik tombol "Tambah Kartu Keluarga" untuk menambahkan data kartu keluarga baru dengan mengisi form yang tersedia',
-          image: "/image/add-family-card.png",
-        },
-        {
-          title: "Update Data Kartu Keluarga",
-          description:
-            "Aktifkan mode dekripsi terlebih dahulu, kemudian form untuk memperbarui data siswa akan muncul",
-          image: "/image/update-family-card.png",
         },
       ],
     },
@@ -211,8 +174,8 @@ export const Tutorial = () => {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             Panduan ini akan membantu Anda memahami cara menggunakan sistem
-            manajemen data SDN 12 Mawasangka. Ikuti langkah-langkah berikut
-            untuk mengoptimalkan penggunaan aplikasi.
+            manajemen data penduduk Desa Oengkolaki. Ikuti langkah-langkah
+            berikut untuk mengoptimalkan penggunaan aplikasi.
           </p>
         </div>
 
