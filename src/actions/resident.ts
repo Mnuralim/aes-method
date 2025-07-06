@@ -155,7 +155,6 @@ export async function createResident(
   const gender = formData.get("gender") as string;
   const occupation = formData.get("occupation") as string;
   const maritalStatus = formData.get("maritalStatus") as string;
-  const familyCardId = formData.get("familyCardId") as string;
 
   if (
     !nik ||
@@ -165,12 +164,11 @@ export async function createResident(
     !birthDate ||
     !birthPlace ||
     !religion ||
-    !gender ||
-    !familyCardId
+    !gender
   ) {
     return {
       error:
-        "Field wajib harus diisi: NIK,No KK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
+        "Field wajib harus diisi: NIK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
     };
   }
 
@@ -249,7 +247,6 @@ export async function updateResident(
   const gender = formData.get("gender") as string;
   const occupation = formData.get("occupation") as string;
   const maritalStatus = formData.get("maritalStatus") as string;
-  const familyCardId = formData.get("familyCardId") as string;
 
   if (
     !nik ||
@@ -259,12 +256,11 @@ export async function updateResident(
     !birthDate ||
     !birthPlace ||
     !religion ||
-    !gender ||
-    !familyCardId
+    !gender
   ) {
     return {
       error:
-        "Field wajib harus diisi: NIK, No KK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
+        "Field wajib harus diisi: NIK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
     };
   }
 

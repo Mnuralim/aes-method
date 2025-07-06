@@ -38,7 +38,7 @@ async function createAdmin() {
       data: {
         username: defaultAdmin.username,
         password: hashedPassword,
-        name: encryptAES(defaultAdmin.name), // Encrypt admin name
+        name: encryptAES(defaultAdmin.name),
       },
     });
 
@@ -46,121 +46,6 @@ async function createAdmin() {
   } else {
     console.log("Admin already exists. Skipping seeding.");
   }
-}
-
-async function createFamilyCards() {
-  console.log("Seeding family cards...");
-
-  const familyCards = [
-    {
-      cardNumber: "3201010101010001",
-      headOfFamily: "Ahmad Suryadi",
-      address:
-        "Jl. Merdeka No. 10, RT 01/RW 02, Kelurahan Sukamaju, Kecamatan Cikarang Utara",
-    },
-    {
-      cardNumber: "3201010101010002",
-      headOfFamily: "Budi Santoso",
-      address:
-        "Jl. Pancasila No. 25, RT 03/RW 04, Kelurahan Karang Asem, Kecamatan Cikarang Selatan",
-    },
-    {
-      cardNumber: "3201010101010003",
-      headOfFamily: "Chandra Wijaya",
-      address:
-        "Jl. Diponegoro No. 8, RT 02/RW 01, Kelurahan Wangunharja, Kecamatan Cikarang Utara",
-    },
-    {
-      cardNumber: "3201010101010004",
-      headOfFamily: "Dewi Sartika",
-      address:
-        "Jl. Kartini No. 15, RT 04/RW 03, Kelurahan Lippo Cikarang, Kecamatan Cikarang Utara",
-    },
-    {
-      cardNumber: "3201010101010005",
-      headOfFamily: "Eko Prasetyo",
-      address:
-        "Jl. Sudirman No. 30, RT 01/RW 05, Kelurahan Cikarang Kota, Kecamatan Cikarang Pusat",
-    },
-    {
-      cardNumber: "3201010101010006",
-      headOfFamily: "Fitri Handayani",
-      address:
-        "Jl. Thamrin No. 12, RT 05/RW 02, Kelurahan Sukamaju, Kecamatan Cikarang Barat",
-    },
-    {
-      cardNumber: "3201010101010007",
-      headOfFamily: "Gunawan Setiawan",
-      address:
-        "Jl. Gatot Subroto No. 20, RT 02/RW 06, Kelurahan Karang Asem, Kecamatan Cikarang Timur",
-    },
-    {
-      cardNumber: "3201010101010008",
-      headOfFamily: "Heni Marlina",
-      address:
-        "Jl. Ahmad Yani No. 5, RT 06/RW 01, Kelurahan Wangunharja, Kecamatan Cikarang Utara",
-    },
-    {
-      cardNumber: "3201010101010009",
-      headOfFamily: "Indra Gunawan",
-      address:
-        "Jl. Veteran No. 18, RT 03/RW 07, Kelurahan Lippo Cikarang, Kecamatan Cikarang Selatan",
-    },
-    {
-      cardNumber: "3201010101010010",
-      headOfFamily: "Joko Widodo",
-      address:
-        "Jl. Pemuda No. 22, RT 07/RW 03, Kelurahan Cikarang Kota, Kecamatan Cikarang Pusat",
-    },
-    {
-      cardNumber: "3201010101010011",
-      headOfFamily: "Kartika Sari",
-      address:
-        "Jl. Pahlawan No. 7, RT 04/RW 08, Kelurahan Sukamaju, Kecamatan Cikarang Barat",
-    },
-    {
-      cardNumber: "3201010101010012",
-      headOfFamily: "Lukman Hakim",
-      address:
-        "Jl. Kemerdekaan No. 35, RT 08/RW 04, Kelurahan Karang Asem, Kecamatan Cikarang Timur",
-    },
-    {
-      cardNumber: "3201010101010013",
-      headOfFamily: "Maya Sari",
-      address:
-        "Jl. Proklamasi No. 14, RT 01/RW 09, Kelurahan Wangunharja, Kecamatan Cikarang Utara",
-    },
-    {
-      cardNumber: "3201010101010014",
-      headOfFamily: "Nurdin Abdullah",
-      address:
-        "Jl. Cendrawasih No. 28, RT 09/RW 01, Kelurahan Lippo Cikarang, Kecamatan Cikarang Selatan",
-    },
-    {
-      cardNumber: "3201010101010015",
-      headOfFamily: "Olivia Putri",
-      address:
-        "Jl. Garuda No. 40, RT 05/RW 10, Kelurahan Cikarang Kota, Kecamatan Cikarang Pusat",
-    },
-  ];
-
-  for (const familyCard of familyCards) {
-    const existing = await prisma.familyCard.findUnique({
-      where: { cardNumber: encryptAES(familyCard.cardNumber) },
-    });
-
-    if (!existing) {
-      await prisma.familyCard.create({
-        data: {
-          cardNumber: encryptAES(familyCard.cardNumber),
-          headOfFamily: encryptAES(familyCard.headOfFamily),
-          address: encryptAES(familyCard.address),
-        },
-      });
-    }
-  }
-
-  console.log("Family cards seeded successfully!");
 }
 
 async function createResidents() {
@@ -181,7 +66,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Karyawan Swasta",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[0]?.id,
     },
     {
       nik: "3201010101870002",
@@ -195,7 +79,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Ibu Rumah Tangga",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[0]?.id,
     },
     {
       nik: "3201010101800003",
@@ -209,7 +92,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Guru",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[1]?.id,
     },
     {
       nik: "3201010101820004",
@@ -223,7 +105,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Perawat",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[1]?.id,
     },
     {
       nik: "3201010101880005",
@@ -237,7 +118,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Pengusaha",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[2]?.id,
     },
     {
       nik: "3201010101900006",
@@ -251,7 +131,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Dokter",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[3]?.id,
     },
     {
       nik: "3201010101850007",
@@ -265,7 +144,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Polisi",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[4]?.id,
     },
     {
       nik: "3201010101920008",
@@ -279,7 +157,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Farmasis",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[5]?.id,
     },
     {
       nik: "3201010101830009",
@@ -293,7 +170,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Insinyur",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[6]?.id,
     },
     {
       nik: "3201010101940010",
@@ -307,7 +183,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Desainer Grafis",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[7]?.id,
     },
     {
       nik: "3201010101860011",
@@ -321,7 +196,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Pilot",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[8]?.id,
     },
     {
       nik: "3201010101780012",
@@ -335,7 +209,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Pegawai Negeri",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[9]?.id,
     },
     {
       nik: "3201010101910013",
@@ -349,7 +222,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Akuntan",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[10]?.id,
     },
     {
       nik: "3201010101840014",
@@ -363,7 +235,6 @@ async function createResidents() {
       gender: "Laki-laki",
       occupation: "Chef",
       maritalStatus: "Menikah",
-      familyCardId: familyCards[11]?.id,
     },
     {
       nik: "3201010101890015",
@@ -377,7 +248,6 @@ async function createResidents() {
       gender: "Perempuan",
       occupation: "Psikolog",
       maritalStatus: "Belum Menikah",
-      familyCardId: familyCards[12]?.id,
     },
   ];
 
@@ -426,7 +296,6 @@ async function createResidents() {
 async function main() {
   console.log("Starting seeding with AES encryption...");
   await createAdmin();
-  await createFamilyCards();
   await createResidents();
   console.log("Seeding completed successfully!");
 }
