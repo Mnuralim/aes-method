@@ -282,17 +282,6 @@ export const ResidentDetail = ({
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
-                      <Phone className="w-5 h-5 text-gray-500 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Nomor Telepon
-                        </p>
-                        <p className="text-sm text-gray-900">
-                          {resident.phone}
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
