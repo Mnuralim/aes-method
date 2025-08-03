@@ -42,7 +42,6 @@ model Resident {
   id            String   @id @unique @default(uuid())
   nik           String   @unique
   name          String
-  phone         String
   address       String
   birthDate     String   @map("birth_date")
   birthPlace    String   @map("birth_place")

@@ -115,7 +115,6 @@ export const ResidentList = ({
           ? formatDate(resident.birthDate)
           : "-",
         Alamat: resident.address || "-",
-        Telepon: resident.phone || "-",
         Agama: resident.religion || "-",
         "Status Perkawinan": resident.maritalStatus || "-",
         "Tanggal Daftar": resident.createdAt
@@ -193,11 +192,6 @@ export const ResidentList = ({
       header: "Alamat",
       accessor: (item) => item.address || "-",
       className: "max-w-xs truncate",
-    },
-    {
-      header: "Telepon",
-      accessor: (item) => item.phone || "-",
-      className: "font-mono text-sm",
     },
     {
       header: "Agama",

@@ -55,7 +55,6 @@ export const getAllResidents = unstable_cache(async function getAllResidents(
         occupation: resident.occupation
           ? decryptAES(resident.occupation, AES_KEY)
           : null,
-        phone: decryptAES(resident.phone, AES_KEY),
         religion: decryptAES(resident.religion, AES_KEY),
       }));
     }
@@ -147,7 +146,6 @@ export async function createResident(
   const session = await getSession();
   const nik = formData.get("nik") as string;
   const name = formData.get("name") as string;
-  const phone = formData.get("phone") as string;
   const address = formData.get("address") as string;
   const birthDate = formData.get("birthDate") as string;
   const birthPlace = formData.get("birthPlace") as string;
@@ -159,7 +157,6 @@ export async function createResident(
   if (
     !nik ||
     !name ||
-    !phone ||
     !address ||
     !birthDate ||
     !birthPlace ||
@@ -168,7 +165,7 @@ export async function createResident(
   ) {
     return {
       error:
-        "Field wajib harus diisi: NIK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
+        "Field wajib harus diisi: NIK, Nama, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
     };
   }
 
@@ -196,7 +193,6 @@ export async function createResident(
       data: {
         nik: encryptAES(nik),
         name: encryptAES(name),
-        phone: encryptAES(phone),
         address: encryptAES(address),
         birthDate: encryptAES(birthDate),
         birthPlace: encryptAES(birthPlace),
@@ -239,7 +235,6 @@ export async function updateResident(
   const id = formData.get("id") as string;
   const nik = formData.get("nik") as string;
   const name = formData.get("name") as string;
-  const phone = formData.get("phone") as string;
   const address = formData.get("address") as string;
   const birthDate = formData.get("birthDate") as string;
   const birthPlace = formData.get("birthPlace") as string;
@@ -251,7 +246,6 @@ export async function updateResident(
   if (
     !nik ||
     !name ||
-    !phone ||
     !address ||
     !birthDate ||
     !birthPlace ||
@@ -260,7 +254,7 @@ export async function updateResident(
   ) {
     return {
       error:
-        "Field wajib harus diisi: NIK, Nama, Telepon, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
+        "Field wajib harus diisi: NIK, Nama, Alamat, Tanggal Lahir, Tempat Lahir, Agama, dan Jenis Kelamin",
     };
   }
 
@@ -314,7 +308,6 @@ export async function updateResident(
         data: {
           nik: encryptAES(nik),
           name: encryptAES(name),
-          phone: encryptAES(phone),
           address: encryptAES(address),
           birthDate: encryptAES(birthDate),
           birthPlace: encryptAES(birthPlace),
@@ -383,7 +376,6 @@ export async function getResidentById(
         birthPlace: decryptAES(resident.birthPlace, AES_KEY),
         birthDate: decryptAES(resident.birthDate, AES_KEY),
         address: decryptAES(resident.address, AES_KEY),
-        phone: decryptAES(resident.phone, AES_KEY),
         religion: decryptAES(resident.religion, AES_KEY),
         gender: decryptAES(resident.gender, AES_KEY),
         maritalStatus: resident.maritalStatus
