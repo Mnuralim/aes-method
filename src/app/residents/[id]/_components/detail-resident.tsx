@@ -15,7 +15,6 @@ import {
   Loader2,
   Unlock,
   Lock,
-  Phone,
   CreditCard,
   Heart,
   Briefcase,
