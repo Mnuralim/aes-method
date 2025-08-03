@@ -1,7 +1,7 @@
 const { default: CryptoJS } = await import("crypto-js");
 
 const AES_KEY = CryptoJS.enc.Utf8.parse(
-  process.env.AES_KEY || "1234567890123456"
+  process.env.AES_KEY || "iddesaoengkolaki"
 );
 const IV = CryptoJS.enc.Utf8.parse(process.env.AES_IV || "abcdef9876543210");
 
