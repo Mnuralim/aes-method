@@ -26,7 +26,7 @@ export default async function ResidentsPage({ searchParams }: Props) {
   const [residentsResult] = await Promise.all([
     getAllResidents(
       isDecrypted === "true" ? true : false,
-      limit || "10",
+      limit || "100",
       skip || "0",
       religion,
       maritalStatus,
@@ -63,6 +63,7 @@ export default async function ResidentsPage({ searchParams }: Props) {
               totalPages: residentsResult.totalPages,
               totalItems: residentsResult.totalCount,
               itemsPerPage: residentsResult.itemsPerPage,
+              itemsPerPageOptions: [100, 200, 500, 1000],
               preserveParams: {
                 search,
                 limit,

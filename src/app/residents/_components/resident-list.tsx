@@ -418,6 +418,7 @@ export const ResidentList = ({
 
       <div className="mt-8">
         <Pagination
+          itemsPerPageOptions={[100, 200, 500, 1000]}
           currentPage={pagination.currentPage}
           totalPages={pagination.totalPages}
           totalItems={pagination.totalItems}
