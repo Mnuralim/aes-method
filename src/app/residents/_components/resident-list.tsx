@@ -5,6 +5,7 @@ import {
   Plus,
   Trash2,
   Eye,
+  EyeOff,
   Lock,
   Unlock,
   Loader2,
@@ -43,6 +44,7 @@ export const ResidentList = ({
     null
   );
   const [key, setKey] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const router = useRouter();
@@ -92,6 +94,10 @@ export const ResidentList = ({
 
   const handleCloseToast = () => {
     router.replace("/residents", { scroll: false });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleExportToExcel = async () => {
@@ -253,15 +259,27 @@ export const ResidentList = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex flex-wrap items-center gap-4">
           {!isDecrypted ? (
-            <div>
+            <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="key"
                 onChange={(e) => setKey(e.target.value)}
                 value={key}
                 placeholder="Masukkan Kunci Dekripsi"
-                className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 text-sm"
+                className="px-4 py-2 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64 text-sm"
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
             </div>
           ) : null}
           <button
