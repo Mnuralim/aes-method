@@ -109,42 +109,85 @@ export const ResidentList = ({
     setIsExporting(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const ExcelJS = await import("exceljs");
 
-      const exportData = residents.map((resident, index) => ({
-        No: index + 1,
-        NIK: resident.nik || "-",
-        "Nama Lengkap": resident.name || "-",
-        "Jenis Kelamin": resident.gender || "-",
-        "Tempat Lahir": resident.birthPlace || "-",
-        "Tanggal Lahir": resident.birthDate
-          ? formatDate(resident.birthDate)
-          : "-",
-        Alamat: resident.address || "-",
-        Agama: resident.religion || "-",
-        "Status Perkawinan": resident.maritalStatus || "-",
-        "Tanggal Daftar": resident.createdAt
-          ? formatDate(resident.createdAt)
-          : "-",
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Data Penduduk");
+
+      const headers = [
+        "No",
+        "NIK",
+        "Nama Lengkap",
+        "Jenis Kelamin",
+        "Tempat Lahir",
+        "Tanggal Lahir",
+        "Alamat",
+        "Agama",
+        "Status Perkawinan",
+        "Tanggal Daftar",
+      ];
+
+      worksheet.addRow(headers);
+
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = { bold: true, color: { argb: "FFFFFF" } };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "366EF7" },
+      };
+      headerRow.alignment = { horizontal: "center", vertical: "middle" };
+      headerRow.height = 30;
+
+      residents.forEach((resident, index) => {
+        const row = [
+          index + 1,
+          resident.nik || "-",
+          resident.name || "-",
+          resident.gender || "-",
+          resident.birthPlace || "-",
+          resident.birthDate ? formatDate(resident.birthDate) : "-",
+          resident.address || "-",
+          resident.religion || "-",
+          resident.maritalStatus || "-",
+          resident.createdAt ? formatDate(resident.createdAt) : "-",
+        ];
+        worksheet.addRow(row);
+      });
+
+      const columnWidths = [5, 18, 25, 12, 20, 15, 30, 12, 15, 15];
+      worksheet.columns = headers.map((header, index) => ({
+        header,
+        key: header.toLowerCase().replace(/\s+/g, "_"),
+        width: columnWidths[index] || 15,
       }));
 
-      const headers = Object.keys(exportData[0] || {});
-      const csvContent = [
-        headers.join(","),
-        ...exportData.map((row) =>
-          headers
-            .map((header) => `"${row[header as keyof typeof row] || ""}"`)
-            .join(",")
-        ),
-      ].join("\n");
+      worksheet.eachRow({ includeEmpty: false }, (row) => {
+        if (row) {
+          row.eachCell((cell) => {
+            if (cell) {
+              cell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
+              };
+            }
+          });
+        }
+      });
 
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
       link.setAttribute(
         "download",
-        `data-penduduk-${new Date().toISOString().split("T")[0]}.csv`
+        `data-penduduk-${new Date().toISOString().split("T")[0]}.xlsx`
       );
       link.style.visibility = "hidden";
       document.body.appendChild(link);
