@@ -9,6 +9,7 @@ import {
   Award,
   History,
   User,
+  FlaskConical,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -106,6 +107,56 @@ export const Tutorial = () => {
           title: "Export Nilai ke Excel",
           description:
             'Gunakan tombol "Export to Excel" untuk mengunduh data nilai. Aktif saat mode dekripsi',
+        },
+      ],
+    },
+    {
+      id: "testing",
+      title: "Pengujian AES Avalanche Effect",
+      icon: <FlaskConical className="w-5 h-5" />,
+      steps: [
+        {
+          title: "Akses Menu Pengujian",
+          description:
+            'Pilih menu "Pengujian" di sidebar pada sisi kiri untuk mengakses halaman pengujian AES Avalanche Effect',
+        },
+        {
+          title: "Memahami Avalanche Effect",
+          description:
+            "Avalanche Effect adalah karakteristik penting dalam kriptografi dimana perubahan kecil pada input menghasilkan perubahan besar pada output. Untuk AES yang baik, nilai ideal adalah 45-55%",
+        },
+        {
+          title: "Tambah Data Pengujian",
+          description:
+            'Isi form "Teks Asli" dan "Teks Modifikasi" dengan data yang ingin diuji. Klik "Tambah ke Daftar" untuk menambahkan pasangan data uji',
+          image: "/image/add-test.png",
+        },
+        {
+          title: "Kelola Daftar Data Test",
+          description:
+            "Setelah menambah data, akan muncul daftar data test. Anda dapat menambah lebih banyak data atau menghapus data tertentu dengan tombol sampah merah",
+          image: "/image/test-data-list.png",
+        },
+        {
+          title: "Jalankan Pengujian",
+          description:
+            'Klik tombol "Jalankan" untuk memulai proses enkripsi dan perhitungan Avalanche Effect untuk semua data dalam daftar. Proses ini akan berjalan otomatis',
+        },
+        {
+          title: "Analisis Hasil Pengujian",
+          description:
+            "Sistem akan menampilkan hasil lengkap termasuk teks asli, teks modifikasi, hasil enkripsi keduanya, dan persentase Avalanche Effect. Nilai akan ditampilkan dengan kode warna sesuai kualitasnya",
+          image: "/image/test-results.png",
+        },
+        {
+          title: "Interpretasi Hasil",
+          description:
+            "Hijau (45-55%): Avalanche effect ideal. Kuning (30-70%): Cukup baik. Merah (di luar range): Kurang baik. Sistem juga menampilkan ringkasan hasil di bagian bawah",
+        },
+        {
+          title: "Catatan Penting",
+          description:
+            "Jika hasil 0%, kemungkinan kedua input identik. Jika >80%, mungkin ada masalah implementasi. Implementasi menggunakan IV tetap sehingga input sama menghasilkan output sama",
         },
       ],
     },

@@ -17,7 +17,7 @@ export default async function Logs({ searchParams }: Props) {
           <div className="flex items-center gap-3">
             <div>
               <h1 className="text-xl font-semibold text-slate-900">
-                Logs Activity
+                Riwayat Aktivitas
               </h1>
               <p className="text-sm text-slate-600 mt-1">
                 Lihat log aktivitas di sini.

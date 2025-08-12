@@ -43,7 +43,7 @@ export default async function ResidentsPage({ searchParams }: Props) {
           <div className="flex items-center gap-3">
             <div>
               <h1 className="text-xl font-semibold text-slate-900">
-                Residents Management
+                Manajemen Data Penduduk
               </h1>
               <p className="text-sm text-slate-600 mt-1">
                 Kelola data Penduduk disini

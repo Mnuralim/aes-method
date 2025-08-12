@@ -93,7 +93,7 @@ export const Test = () => {
 
   const runAllTests = async () => {
     if (testDataList.length === 0) {
-      alert("Tambahkan minimal satu data test terlebih dahulu");
+      alert("Tambahkan minimal satu data uji terlebih dahulu");
       return;
     }
 
@@ -148,7 +148,7 @@ export const Test = () => {
     <div className="mx-auto space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          AES Avalanche Effect Tester
+          Pengujian AES Avalanche Effect
         </h1>
         <p className="text-gray-600">
           Uji efek avalanche dari enkripsi AES dengan multiple data
@@ -158,13 +158,13 @@ export const Test = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Plus className="w-5 h-5" />
-          Tambah Data Test
+          Tambah Data Pengujian
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Original Text
+              Teks Asli
             </label>
             <textarea
               value={currentOriginal}
@@ -177,14 +177,14 @@ export const Test = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Modified Text
+              Teks Modifikasi
             </label>
             <textarea
               value={currentModified}
               onChange={(e) => setCurrentModified(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={3}
-              placeholder="Masukkan teks modified..."
+              placeholder="Masukkan teks modifikasi..."
             />
           </div>
         </div>
@@ -195,7 +195,7 @@ export const Test = () => {
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Tambah ke List
+            Tambah ke Daftar
           </button>
         </div>
       </div>
@@ -213,13 +213,13 @@ export const Test = () => {
                 className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
               >
                 <Calculator className="w-4 h-4" />
-                {isProcessing ? "Processing..." : "Run All Tests"}
+                {isProcessing ? "Memproses..." : "Jalankan"}
               </button>
               <button
                 onClick={clearAll}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
               >
-                Clear All
+                Hapus Semua
               </button>
             </div>
           </div>
@@ -233,20 +233,18 @@ export const Test = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-700 mb-1">
-                      Test #{index + 1}
+                      Uji #{index + 1}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <div className="text-xs text-gray-500 mb-1">
-                          Original:
-                        </div>
+                        <div className="text-xs text-gray-500 mb-1">Asli:</div>
                         <div className="text-sm bg-gray-50 p-2 rounded border max-h-20 overflow-y-auto">
                           {data.original}
                         </div>
                       </div>
                       <div>
                         <div className="text-xs text-gray-500 mb-1">
-                          Modified:
+                          Modifikasi:
                         </div>
                         <div className="text-sm bg-gray-50 p-2 rounded border max-h-20 overflow-y-auto">
                           {data.modified}
@@ -267,19 +265,18 @@ export const Test = () => {
         </div>
       )}
 
-      {/* Results Section */}
       {results.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
             <Calculator className="w-5 h-5" />
-            Hasil Test Avalanche Effect
+            Hasil Uji Avalanche Effect
           </h2>
 
           <div className="mb-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
             <div className="flex items-center gap-2 mb-2">
               <AlertCircle className="w-4 h-4 text-amber-600" />
               <span className="text-sm font-medium text-amber-800">
-                Catatan Penting untuk AES Testing:
+                Catatan Penting untuk pengujian AES:
               </span>
             </div>
             <div className="text-sm text-amber-700 space-y-2">
@@ -336,7 +333,7 @@ export const Test = () => {
                 <div className="mb-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-gray-700">
-                      Test #{index + 1}
+                      Uji #{index + 1}
                     </span>
                     <div
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getAvalancheColor(
@@ -352,7 +349,7 @@ export const Test = () => {
                   <div className="space-y-2">
                     <div>
                       <div className="text-xs text-gray-500 mb-1">
-                        Original Text:
+                        Teks Asli:
                       </div>
                       <div className="bg-gray-50 p-2 rounded border max-h-16 overflow-y-auto">
                         {result.original}
@@ -360,7 +357,7 @@ export const Test = () => {
                     </div>
                     <div>
                       <div className="text-xs text-gray-500 mb-1">
-                        Original Encrypted:
+                        Teks Asli Enkripsi:
                       </div>
                       <div className="bg-blue-50 p-2 rounded border font-mono text-xs max-h-16 overflow-y-auto break-all">
                         {result.originalEncrypted}
@@ -371,7 +368,7 @@ export const Test = () => {
                   <div className="space-y-2">
                     <div>
                       <div className="text-xs text-gray-500 mb-1">
-                        Modified Text:
+                        Teks Modifikasi:
                       </div>
                       <div className="bg-gray-50 p-2 rounded border max-h-16 overflow-y-auto">
                         {result.modified}
@@ -379,7 +376,7 @@ export const Test = () => {
                     </div>
                     <div>
                       <div className="text-xs text-gray-500 mb-1">
-                        Modified Encrypted:
+                        Teks Modifikasi Enkripsi:
                       </div>
                       <div className="bg-green-50 p-2 rounded border font-mono text-xs max-h-16 overflow-y-auto break-all">
                         {result.modifiedEncrypted}
