@@ -279,17 +279,6 @@ async function createResidents() {
     }
   }
 
-  for (const familyCard of familyCards) {
-    const memberCount = await prisma.resident.count({
-      where: { familyCardId: familyCard.id },
-    });
-
-    await prisma.familyCard.update({
-      where: { id: familyCard.id },
-      data: { memberCount },
-    });
-  }
-
   console.log("Residents seeded successfully!");
 }
 

@@ -228,12 +228,15 @@ export const ResidentList = ({
       className: "w-20 text-center",
     },
     {
-      header: "Tempat, Tanggal Lahir",
+      header: "Tempat Lahir",
+      accessor: (item) => item.birthPlace || "-",
+      className: "w-20 text-center",
+    },
+    {
+      header: "Tanggal Lahir",
       accessor: (item) =>
-        item.birthPlace && item.birthDate
-          ? `${item.birthPlace}, ${
-              isDecrypted ? formatDate(item.birthDate) : item.birthDate
-            }`
+        item.birthDate
+          ? ` ${isDecrypted ? formatDate(item.birthDate) : item.birthDate}`
           : "-",
       className: "max-w-xs truncate",
     },

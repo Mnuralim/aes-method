@@ -1,5 +1,4 @@
 "use server";
-
 const { default: CryptoJS } = await import("crypto-js");
 import { decryptAES, encryptAES } from "@/lib/aes";
 import prisma from "@/lib/prisma";
@@ -7,6 +6,7 @@ import { createActivity } from "./activity";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "./session";
+
 const currentKey = process.env.AES_KEY;
 
 export const getAllResidents = unstable_cache(async function getAllResidents(
@@ -34,13 +34,11 @@ export const getAllResidents = unstable_cache(async function getAllResidents(
       if (!key) {
         throw new Error("Kunci AES tidak ditemukan");
       }
-
       if (currentKey !== key) {
         throw new Error("Kunci AES tidak sesuai");
       }
 
       const AES_KEY = CryptoJS.enc.Utf8.parse(key);
-
       residents = residents.map((resident) => ({
         ...resident,
         address: decryptAES(resident.address, AES_KEY),
@@ -52,6 +50,24 @@ export const getAllResidents = unstable_cache(async function getAllResidents(
           ? decryptAES(resident.maritalStatus, AES_KEY)
           : null,
         nik: decryptAES(resident.nik, AES_KEY),
+        occupation: resident.occupation
+          ? decryptAES(resident.occupation, AES_KEY)
+          : null,
+        religion: decryptAES(resident.religion, AES_KEY),
+      }));
+    } else {
+      const AES_KEY = CryptoJS.enc.Utf8.parse(currentKey!);
+      residents = residents.map((resident) => ({
+        ...resident,
+        address: decryptAES(resident.address, AES_KEY),
+        birthDate: resident.birthDate,
+        birthPlace: decryptAES(resident.birthPlace, AES_KEY),
+        gender: decryptAES(resident.gender, AES_KEY),
+        name: decryptAES(resident.name, AES_KEY),
+        maritalStatus: resident.maritalStatus
+          ? decryptAES(resident.maritalStatus, AES_KEY)
+          : null,
+        nik: resident.nik,
         occupation: resident.occupation
           ? decryptAES(resident.occupation, AES_KEY)
           : null,
